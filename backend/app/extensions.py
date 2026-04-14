@@ -3,4 +3,4 @@ from flask_limiter.util import get_remote_address
 from flask_socketio import SocketIO
 
 socketio = SocketIO(cors_allowed_origins="*")
-limiter = Limiter(key_func=get_remote_address)
+limiter = Limiter(key_func=get_remote_address, default_limits=[])

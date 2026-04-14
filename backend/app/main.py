@@ -35,7 +35,8 @@ def create_app() -> Flask:
 
     setup_logging()
     CORS(app, supports_credentials=True, origins=app.config["CORS_ALLOWED_ORIGINS"])
-    limiter.init_app(app, default_limits=[app.config["RATE_LIMIT"]])
+    limiter.default_limits = [app.config["RATE_LIMIT"]]
+    limiter.init_app(app)
     socketio.init_app(app)
 
     app.cache = CacheClient(app.config["REDIS_URL"])
