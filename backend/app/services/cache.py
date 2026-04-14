@@ -6,7 +6,7 @@ from typing import Any, Optional
 
 try:
     import redis
-except Exception:  # pragma: no cover
+except ImportError:  # pragma: no cover
     redis = None
 
 

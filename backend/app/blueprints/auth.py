@@ -14,7 +14,10 @@ def send_otp():
         return jsonify({"error": "email_required"}), 400
     otp = generate_otp()
     current_app.cache.set_json(f"otp:{email}", {"otp": otp}, ex=300)
-    return jsonify({"sent": True, "provider": "smtp_fallback", "otp_debug": otp})
+    response = {"sent": True, "provider": "smtp_fallback"}
+    if current_app.config.get("FLASK_ENV") != "production":
+        response["otp_debug"] = otp
+    return jsonify(response)
 
 
 @auth_bp.post("/verify-otp")
