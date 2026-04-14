@@ -2,7 +2,7 @@ from __future__ import annotations
 
 from dataclasses import dataclass
 from datetime import datetime, timedelta, timezone
-import random
+import secrets
 from typing import Any
 
 import jwt
@@ -16,7 +16,7 @@ class AuthResult:
 
 
 def generate_otp() -> str:
-    return f"{random.randint(100000, 999999)}"
+    return f"{100000 + secrets.randbelow(900000)}"
 
 
 def issue_token(payload: dict[str, Any]) -> str:
