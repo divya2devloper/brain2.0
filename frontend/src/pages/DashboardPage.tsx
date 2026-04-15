@@ -33,7 +33,8 @@ export function DashboardPage() {
     { stage: 'Members', value: data?.active_members ?? 0 }
   ]
 
-  const occupancy = Math.min(100, Math.round(((data?.active_members ?? 0) / 200) * 100))
+  const totalCapacity = data?.capacity ?? 200
+  const occupancy = Math.min(100, Math.round(((data?.active_members ?? 0) / totalCapacity) * 100))
 
   return (
     <>
@@ -72,6 +73,7 @@ export function DashboardPage() {
           <Stack h="100%">
             <Card withBorder radius="md">
               <Title order={5} mb="sm">Membership Occupancy</Title>
+              <Text c="dimmed" size="xs">Capacity: {totalCapacity}</Text>
               <Group justify="center" mt="sm">
                 <RingProgress
                   size={140}

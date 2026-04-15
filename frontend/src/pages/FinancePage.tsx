@@ -8,6 +8,12 @@ export function FinancePage() {
     queryKey: ['finance'],
     queryFn: async () => (await api.get('/api/v1/business/finance')).data
   })
+  const net = data?.net ?? 0
+  const pieData = [
+    { name: 'Income', value: data?.income ?? 0 },
+    { name: 'Expense', value: data?.expense ?? 0 },
+    ...(net > 0 ? [{ name: 'Net', value: net }] : [])
+  ]
 
   return (
     <>
@@ -38,11 +44,7 @@ export function FinancePage() {
             <ResponsiveContainer width="100%" height={250}>
               <PieChart>
                 <Pie
-                  data={[
-                    { name: 'Income', value: data?.income ?? 0 },
-                    { name: 'Expense', value: data?.expense ?? 0 },
-                    { name: 'Net', value: Math.max(data?.net ?? 0, 0) }
-                  ]}
+                  data={pieData}
                   dataKey="value"
                   nameKey="name"
                   innerRadius={65}
@@ -50,11 +52,16 @@ export function FinancePage() {
                 >
                   <Cell fill="#12b886" />
                   <Cell fill="#fa5252" />
-                  <Cell fill="#4c6ef5" />
+                  {net > 0 && <Cell fill="#4c6ef5" />}
                 </Pie>
                 <Tooltip />
               </PieChart>
             </ResponsiveContainer>
+            {net < 0 && (
+              <Text c="orange" size="xs" mt="xs">
+                Net is negative this cycle and is excluded from the distribution ring.
+              </Text>
+            )}
           </Card>
         </Grid.Col>
         <Grid.Col span={{ base: 12, md: 5 }}>
