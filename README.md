@@ -54,6 +54,30 @@ Health/status endpoints:
 Run Supabase SQL migration:
 - `supabase/migrations/20260414_initial_brain20.sql`
 
+## Supabase local setup
+This repo includes a local Supabase CLI config:
+- `supabase/config.toml`
+
+Run locally (with Supabase CLI installed):
+```bash
+supabase start
+supabase db reset
+```
+
+Then set backend env values in `backend/.env`:
+- `SUPABASE_URL` (local REST URL, e.g. `http://127.0.0.1:54321`)
+- `SUPABASE_KEY` (anon key)
+- `SUPABASE_SERVICE_KEY` (service role key)
+
+## Postman
+Import:
+- `postman/Brain2.0.postman_collection.json`
+- `postman/Brain2.0.postman_environment.json`
+
+Recommended flow:
+1. Run `Auth > Login (sets token)` to populate `{{token}}`.
+2. Run any request in `Protected` and `WhatsApp` folders.
+
 ## Production notes
 - Gunicorn config: `backend/gunicorn.conf.py`
 - Nginx sample: `backend/config/nginx.brain2.0.conf`
