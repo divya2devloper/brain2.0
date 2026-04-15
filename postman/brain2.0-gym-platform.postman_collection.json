@@ -1,0 +1,265 @@
+{
+  "info": {
+    "name": "Brain 2.0 Gym Platform APIs",
+    "_postman_id": "f7ea53df-5490-4d8f-9514-e68fe84877e6",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+    "description": "Public, gym-owner onboarding, and admin approval APIs for Brain 2.0."
+  },
+  "variable": [
+    { "key": "baseUrl", "value": "http://localhost:2021" },
+    { "key": "ownerToken", "value": "" },
+    { "key": "adminToken", "value": "" },
+    { "key": "gymId", "value": "" },
+    { "key": "applicationId", "value": "" },
+    { "key": "userId", "value": "" }
+  ],
+  "item": [
+    {
+      "name": "Public",
+      "item": [
+        {
+          "name": "Landing",
+          "request": {
+            "method": "GET",
+            "url": "{{baseUrl}}/api/v1/public/landing"
+          }
+        },
+        {
+          "name": "Search Gyms",
+          "request": {
+            "method": "GET",
+            "url": "{{baseUrl}}/api/v1/public/gyms/search?q=fit"
+          }
+        },
+        {
+          "name": "Gym Detail",
+          "request": {
+            "method": "GET",
+            "url": "{{baseUrl}}/api/v1/public/gyms/{{gymId}}"
+          }
+        }
+      ]
+    },
+    {
+      "name": "Auth",
+      "item": [
+        {
+          "name": "Send OTP",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"email\": \"owner@example.com\"\n}"
+            },
+            "url": "{{baseUrl}}/api/v1/auth/send-otp"
+          }
+        },
+        {
+          "name": "Verify OTP",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"email\": \"owner@example.com\",\n  \"otp\": \"123456\"\n}"
+            },
+            "url": "{{baseUrl}}/api/v1/auth/verify-otp"
+          }
+        },
+        {
+          "name": "Login as Owner",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"username\": \"owner\",\n  \"password\": \"pass123\"\n}"
+            },
+            "url": "{{baseUrl}}/api/v1/auth/login"
+          }
+        },
+        {
+          "name": "Login as Admin",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"username\": \"admin\",\n  \"password\": \"pass123\"\n}"
+            },
+            "url": "{{baseUrl}}/api/v1/auth/login"
+          }
+        }
+      ]
+    },
+    {
+      "name": "Gym Owner Onboarding",
+      "item": [
+        {
+          "name": "Register Gym Owner",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"email\": \"owner@example.com\",\n  \"password\": \"StrongPass123!\",\n  \"full_name\": \"Owner User\",\n  \"phone\": \"+15555550100\",\n  \"auth_provider\": \"email\"\n}"
+            },
+            "url": "{{baseUrl}}/api/v1/owner/onboarding/register"
+          }
+        },
+        {
+          "name": "Save Basic Profile",
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" },
+              { "key": "Authorization", "value": "Bearer {{ownerToken}}" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"full_name\": \"Owner User\",\n  \"phone\": \"+15555550100\",\n  \"email\": \"owner@example.com\"\n}"
+            },
+            "url": "{{baseUrl}}/api/v1/owner/onboarding/basic-profile"
+          }
+        },
+        {
+          "name": "Create Gym",
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" },
+              { "key": "Authorization", "value": "Bearer {{ownerToken}}" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"Brain Fitness Center\",\n  \"address\": \"123 Main Street, NY\",\n  \"latitude\": 40.7128,\n  \"longitude\": -74.0060,\n  \"description\": \"Premium fitness and training center\",\n  \"timezone\": \"America/New_York\",\n  \"hours\": {\"mon-fri\": \"06:00-22:00\", \"sat\": \"08:00-20:00\"},\n  \"amenities\": [\"parking\", \"lockers\", \"showers\"],\n  \"website\": \"https://brainfitness.example.com\",\n  \"phone\": \"+15555550001\",\n  \"photos\": [\"https://cdn.example.com/gym-1.jpg\"],\n  \"logo_url\": \"https://cdn.example.com/logo.jpg\"\n}"
+            },
+            "url": "{{baseUrl}}/api/v1/owner/onboarding/create-gym"
+          }
+        },
+        {
+          "name": "Submit Verification",
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" },
+              { "key": "Authorization", "value": "Bearer {{ownerToken}}" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"gym_id\": \"{{gymId}}\",\n  \"business_tax_id\": \"TAX-99999\",\n  \"license_doc_url\": \"https://cdn.example.com/license.pdf\",\n  \"id_doc_url\": \"https://cdn.example.com/id.pdf\",\n  \"proof_of_address_url\": \"https://cdn.example.com/address.pdf\",\n  \"vat_number\": \"VAT-12345\"\n}"
+            },
+            "url": "{{baseUrl}}/api/v1/owner/onboarding/verification"
+          }
+        },
+        {
+          "name": "Connect Payout Provider",
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" },
+              { "key": "Authorization", "value": "Bearer {{ownerToken}}" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"gym_id\": \"{{gymId}}\",\n  \"payment_provider_account_id\": \"acct_12345\"\n}"
+            },
+            "url": "{{baseUrl}}/api/v1/owner/onboarding/payment-setup"
+          }
+        },
+        {
+          "name": "Owner Dashboard",
+          "request": {
+            "method": "GET",
+            "header": [{ "key": "Authorization", "value": "Bearer {{ownerToken}}" }],
+            "url": "{{baseUrl}}/api/v1/owner/dashboard"
+          }
+        }
+      ]
+    },
+    {
+      "name": "Admin",
+      "item": [
+        {
+          "name": "Admin Dashboard",
+          "request": {
+            "method": "GET",
+            "header": [{ "key": "Authorization", "value": "Bearer {{adminToken}}" }],
+            "url": "{{baseUrl}}/api/v1/admin/dashboard"
+          }
+        },
+        {
+          "name": "Pending Approvals",
+          "request": {
+            "method": "GET",
+            "header": [{ "key": "Authorization", "value": "Bearer {{adminToken}}" }],
+            "url": "{{baseUrl}}/api/v1/admin/approvals/pending"
+          }
+        },
+        {
+          "name": "Approve Gym Owner Application",
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" },
+              { "key": "Authorization", "value": "Bearer {{adminToken}}" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"decision\": \"APPROVED\",\n  \"note\": \"All verification docs approved\"\n}"
+            },
+            "url": "{{baseUrl}}/api/v1/admin/approvals/{{applicationId}}/decision"
+          }
+        },
+        {
+          "name": "Assign Role",
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" },
+              { "key": "Authorization", "value": "Bearer {{adminToken}}" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"user_id\": \"{{userId}}\",\n  \"role\": \"TRAINER\"\n}"
+            },
+            "url": "{{baseUrl}}/api/v1/admin/roles/assign"
+          }
+        },
+        {
+          "name": "List Users",
+          "request": {
+            "method": "GET",
+            "header": [{ "key": "Authorization", "value": "Bearer {{adminToken}}" }],
+            "url": "{{baseUrl}}/api/v1/admin/users"
+          }
+        },
+        {
+          "name": "List Gyms",
+          "request": {
+            "method": "GET",
+            "header": [{ "key": "Authorization", "value": "Bearer {{adminToken}}" }],
+            "url": "{{baseUrl}}/api/v1/admin/gyms"
+          }
+        },
+        {
+          "name": "Financial Reports",
+          "request": {
+            "method": "GET",
+            "header": [{ "key": "Authorization", "value": "Bearer {{adminToken}}" }],
+            "url": "{{baseUrl}}/api/v1/admin/financial-reports"
+          }
+        },
+        {
+          "name": "Subscription Plans",
+          "request": {
+            "method": "GET",
+            "header": [{ "key": "Authorization", "value": "Bearer {{adminToken}}" }],
+            "url": "{{baseUrl}}/api/v1/admin/subscriptions/plans"
+          }
+        }
+      ]
+    }
+  ]
+}

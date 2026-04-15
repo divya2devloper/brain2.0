@@ -16,6 +16,7 @@ from app.blueprints.export import export_bp
 from app.blueprints.gym import gym_bp
 from app.blueprints.instagram import instagram_bp
 from app.blueprints.leads import leads_bp
+from app.blueprints.platform import admin_bp, owner_bp, public_bp
 from app.blueprints.settings import settings_bp
 from app.blueprints.training import training_bp
 from app.blueprints.whatsapp import whatsapp_bp
@@ -59,6 +60,9 @@ def create_app() -> Flask:
         leads_bp,
         billing_bp,
         settings_bp,
+        public_bp,
+        owner_bp,
+        admin_bp,
     ]:
         app.register_blueprint(bp)
 
