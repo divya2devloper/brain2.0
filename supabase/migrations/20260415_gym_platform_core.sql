@@ -24,10 +24,10 @@ create table if not exists public.gyms (
   owner_user_id uuid not null references auth.users(id) on delete cascade,
   name text not null,
   address text not null,
-  latitude numeric(10, 7) not null,
+  latitude numeric(9, 7) not null,
   longitude numeric(10, 7) not null,
   description text not null,
-  timezone text not null default 'UTC',
+  timezone text not null,
   hours jsonb not null default '{}'::jsonb,
   amenities text[] not null default '{}',
   website text,
@@ -195,8 +195,33 @@ create or replace function public.current_user_role()
 returns text
 language sql
 stable
+security definer
+set search_path = public
 as $$
-  select coalesce(auth.jwt() ->> 'role', '');
+  select coalesce(
+    (
+      select ur.role
+      from public.user_roles ur
+      where ur.user_id = auth.uid()
+      order by case ur.role when 'ADMIN' then 1 when 'OWNER' then 2 when 'TRAINER' then 3 else 4 end
+      limit 1
+    ),
+    ''
+  );
+$$;
+
+create or replace function public.current_user_is_admin()
+returns boolean
+language sql
+stable
+security definer
+set search_path = public
+as $$
+  select exists (
+    select 1
+    from public.user_roles ur
+    where ur.user_id = auth.uid() and ur.role = 'ADMIN'
+  );
 $$;
 
 create policy own_profile_read_write on public.profiles
@@ -206,7 +231,7 @@ with check (id = auth.uid());
 
 create policy own_roles_read on public.user_roles
 for select
-using (user_id = auth.uid() or public.current_user_role() = 'ADMIN');
+using (user_id = auth.uid() or public.current_user_is_admin());
 
 create policy gyms_public_or_owner_or_admin on public.gyms
 for select

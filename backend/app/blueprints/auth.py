@@ -1,5 +1,7 @@
 from __future__ import annotations
 
+import secrets
+
 from flask import Blueprint, current_app, jsonify, request
 
 from app.services.auth import generate_otp, issue_token
@@ -27,6 +29,7 @@ def verify_otp():
     record = current_app.cache.get_json(f"otp:{email}")
     if not record or record.get("otp") != otp:
         return jsonify({"verified": False}), 400
+    current_app.cache.set_json(f"otp_verified:{email}", {"verified": True}, ex=900)
     return jsonify({"verified": True, "next": "onboarding"})
 
 
@@ -36,8 +39,8 @@ def onboarding():
     username = data.get("username")
     password = data.get("password")
     business_id = data.get("business_id", "default-business")
-    role = str(data.get("role", "OWNER")).upper()
-    user_id = data.get("user_id", "default-user")
+    role = "OWNER"
+    user_id = "default-user"
     if not username or not password:
         return jsonify({"error": "username_password_required"}), 400
     token = issue_token({"sub": username, "user_id": user_id, "business_id": business_id, "role": role})
@@ -50,11 +53,24 @@ def onboarding():
 def login():
     username = request.json.get("username", "")
     password = request.json.get("password", "")
-    role = str(request.json.get("role", "OWNER")).upper()
-    user_id = request.json.get("user_id", "default-user")
-    business_id = request.json.get("business_id", "default-business")
     if not username or not password:
         return jsonify({"error": "invalid_credentials"}), 400
+    admin_password = current_app.config["ADMIN_LOGIN_PASSWORD"]
+    owner_password = current_app.config["OWNER_LOGIN_PASSWORD"]
+    if not admin_password or not owner_password:
+        return jsonify({"error": "auth_not_configured"}), 503
+
+    if username == current_app.config["ADMIN_LOGIN_USERNAME"] and secrets.compare_digest(password, admin_password):
+        role = "ADMIN"
+        user_id = "admin-user"
+        business_id = "admin-business"
+    elif username == current_app.config["OWNER_LOGIN_USERNAME"] and secrets.compare_digest(password, owner_password):
+        role = "OWNER"
+        user_id = "default-user"
+        business_id = "default-business"
+    else:
+        return jsonify({"error": "invalid_credentials"}), 400
+
     token = issue_token({"sub": username, "user_id": user_id, "business_id": business_id, "role": role})
     return jsonify({"token": token, "user": {"user_id": user_id, "username": username, "business_id": business_id, "role": role}})
 
@@ -64,10 +80,10 @@ def google_oauth():
     google_token = request.json.get("google_token", "")
     if not google_token:
         return jsonify({"error": "google_token_required"}), 400
-    token = issue_token({"sub": "google_user", "user_id": "google-user", "business_id": "default-business", "role": "ADMIN"})
+    token = issue_token({"sub": "google_user", "user_id": "google-user", "business_id": "default-business", "role": "MEMBER"})
     return jsonify(
         {
             "token": token,
-            "user": {"user_id": "google-user", "username": "google_user", "business_id": "default-business", "role": "ADMIN"},
+            "user": {"user_id": "google-user", "username": "google_user", "business_id": "default-business", "role": "MEMBER"},
         }
     )

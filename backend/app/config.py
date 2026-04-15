@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import os
+import secrets
 
 
 class Config:
@@ -14,3 +15,7 @@ class Config:
     WHATSAPP_VERIFY_TOKEN = os.getenv("WHATSAPP_VERIFY_TOKEN", "")
     REDIS_URL = os.getenv("REDIS_URL", "redis://localhost:6379/0")
     RATE_LIMIT = os.getenv("RATE_LIMIT", "100/minute")
+    ADMIN_LOGIN_USERNAME = os.getenv("ADMIN_LOGIN_USERNAME", "admin")
+    ADMIN_LOGIN_PASSWORD = os.getenv("ADMIN_LOGIN_PASSWORD") or secrets.token_urlsafe(24)
+    OWNER_LOGIN_USERNAME = os.getenv("OWNER_LOGIN_USERNAME", "owner")
+    OWNER_LOGIN_PASSWORD = os.getenv("OWNER_LOGIN_PASSWORD") or secrets.token_urlsafe(24)

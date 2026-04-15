@@ -42,6 +42,10 @@ See:
 - `backend/.env.production.example`
 - `frontend/.env.example`
 
+For local auth testing, set:
+- `ADMIN_LOGIN_USERNAME` / `ADMIN_LOGIN_PASSWORD`
+- `OWNER_LOGIN_USERNAME` / `OWNER_LOGIN_PASSWORD`
+
 ## API prefixes
 All module APIs are exposed under `/api/v1`:
 - `/auth`, `/gym`, `/dashboard`, `/whatsapp`, `/instagram`, `/business`, `/export`, `/training`, `/leads`, `/billing`, `/settings`, `/public`, `/owner`, `/admin`

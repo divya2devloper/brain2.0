@@ -44,13 +44,37 @@
       "name": "Auth",
       "item": [
         {
+          "name": "Send OTP",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"email\": \"owner@example.com\"\n}"
+            },
+            "url": "{{baseUrl}}/api/v1/auth/send-otp"
+          }
+        },
+        {
+          "name": "Verify OTP",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"email\": \"owner@example.com\",\n  \"otp\": \"123456\"\n}"
+            },
+            "url": "{{baseUrl}}/api/v1/auth/verify-otp"
+          }
+        },
+        {
           "name": "Login as Owner",
           "request": {
             "method": "POST",
             "header": [{ "key": "Content-Type", "value": "application/json" }],
             "body": {
               "mode": "raw",
-              "raw": "{\n  \"username\": \"owner\",\n  \"password\": \"pass123\",\n  \"role\": \"OWNER\",\n  \"user_id\": \"owner-user\",\n  \"business_id\": \"owner-business\"\n}"
+              "raw": "{\n  \"username\": \"owner\",\n  \"password\": \"pass123\"\n}"
             },
             "url": "{{baseUrl}}/api/v1/auth/login"
           }
@@ -62,7 +86,7 @@
             "header": [{ "key": "Content-Type", "value": "application/json" }],
             "body": {
               "mode": "raw",
-              "raw": "{\n  \"username\": \"admin\",\n  \"password\": \"pass123\",\n  \"role\": \"ADMIN\",\n  \"user_id\": \"admin-user\",\n  \"business_id\": \"admin-business\"\n}"
+              "raw": "{\n  \"username\": \"admin\",\n  \"password\": \"pass123\"\n}"
             },
             "url": "{{baseUrl}}/api/v1/auth/login"
           }
@@ -109,7 +133,7 @@
             ],
             "body": {
               "mode": "raw",
-              "raw": "{\n  \"name\": \"Brain Fitness Center\",\n  \"address\": \"123 Main Street, NY\",\n  \"latitude\": 40.7128,\n  \"longitude\": -74.0060,\n  \"description\": \"Premium fitness and training center\",\n  \"hours\": {\"mon-fri\": \"06:00-22:00\", \"sat\": \"08:00-20:00\"},\n  \"amenities\": [\"parking\", \"lockers\", \"showers\"],\n  \"website\": \"https://brainfitness.example.com\",\n  \"phone\": \"+15555550001\",\n  \"photos\": [\"https://cdn.example.com/gym-1.jpg\"],\n  \"logo_url\": \"https://cdn.example.com/logo.jpg\"\n}"
+              "raw": "{\n  \"name\": \"Brain Fitness Center\",\n  \"address\": \"123 Main Street, NY\",\n  \"latitude\": 40.7128,\n  \"longitude\": -74.0060,\n  \"description\": \"Premium fitness and training center\",\n  \"timezone\": \"America/New_York\",\n  \"hours\": {\"mon-fri\": \"06:00-22:00\", \"sat\": \"08:00-20:00\"},\n  \"amenities\": [\"parking\", \"lockers\", \"showers\"],\n  \"website\": \"https://brainfitness.example.com\",\n  \"phone\": \"+15555550001\",\n  \"photos\": [\"https://cdn.example.com/gym-1.jpg\"],\n  \"logo_url\": \"https://cdn.example.com/logo.jpg\"\n}"
             },
             "url": "{{baseUrl}}/api/v1/owner/onboarding/create-gym"
           }
