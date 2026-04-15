@@ -36,21 +36,27 @@ def onboarding():
     username = data.get("username")
     password = data.get("password")
     business_id = data.get("business_id", "default-business")
-    role = data.get("role", "OWNER")
+    role = str(data.get("role", "OWNER")).upper()
+    user_id = data.get("user_id", "default-user")
     if not username or not password:
         return jsonify({"error": "username_password_required"}), 400
-    token = issue_token({"sub": username, "business_id": business_id, "role": role})
-    return jsonify({"token": token, "user": {"username": username, "business_id": business_id, "role": role}})
+    token = issue_token({"sub": username, "user_id": user_id, "business_id": business_id, "role": role})
+    return jsonify(
+        {"token": token, "user": {"user_id": user_id, "username": username, "business_id": business_id, "role": role}}
+    )
 
 
 @auth_bp.post("/login")
 def login():
     username = request.json.get("username", "")
     password = request.json.get("password", "")
+    role = str(request.json.get("role", "OWNER")).upper()
+    user_id = request.json.get("user_id", "default-user")
+    business_id = request.json.get("business_id", "default-business")
     if not username or not password:
         return jsonify({"error": "invalid_credentials"}), 400
-    token = issue_token({"sub": username, "business_id": "default-business", "role": "OWNER"})
-    return jsonify({"token": token, "user": {"username": username, "business_id": "default-business", "role": "OWNER"}})
+    token = issue_token({"sub": username, "user_id": user_id, "business_id": business_id, "role": role})
+    return jsonify({"token": token, "user": {"user_id": user_id, "username": username, "business_id": business_id, "role": role}})
 
 
 @auth_bp.post("/google")
@@ -58,5 +64,10 @@ def google_oauth():
     google_token = request.json.get("google_token", "")
     if not google_token:
         return jsonify({"error": "google_token_required"}), 400
-    token = issue_token({"sub": "google_user", "business_id": "default-business", "role": "ADMIN"})
-    return jsonify({"token": token, "user": {"username": "google_user", "business_id": "default-business", "role": "ADMIN"}})
+    token = issue_token({"sub": "google_user", "user_id": "google-user", "business_id": "default-business", "role": "ADMIN"})
+    return jsonify(
+        {
+            "token": token,
+            "user": {"user_id": "google-user", "username": "google_user", "business_id": "default-business", "role": "ADMIN"},
+        }
+    )

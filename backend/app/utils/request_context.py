@@ -26,6 +26,27 @@ def require_auth(fn: Callable[..., Any]):
     return wrapper
 
 
+def user_role() -> str:
+    user = getattr(request, "user", {})
+    return str(user.get("role", "")).upper()
+
+
+def require_role(*roles: str):
+    allowed_roles = {r.upper() for r in roles}
+
+    def decorator(fn: Callable[..., Any]):
+        @wraps(fn)
+        def wrapper(*args: Any, **kwargs: Any):
+            role = user_role()
+            if role not in allowed_roles:
+                return jsonify({"error": "Forbidden", "required_roles": sorted(allowed_roles)}), 403
+            return fn(*args, **kwargs)
+
+        return wrapper
+
+    return decorator
+
+
 def tenant_id() -> str:
     user = getattr(request, "user", {})
     return user.get("business_id", "")

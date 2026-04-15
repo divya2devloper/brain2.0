@@ -44,7 +44,7 @@ See:
 
 ## API prefixes
 All module APIs are exposed under `/api/v1`:
-- `/auth`, `/gym`, `/dashboard`, `/whatsapp`, `/instagram`, `/business`, `/export`, `/training`, `/leads`, `/billing`, `/settings`
+- `/auth`, `/gym`, `/dashboard`, `/whatsapp`, `/instagram`, `/business`, `/export`, `/training`, `/leads`, `/billing`, `/settings`, `/public`, `/owner`, `/admin`
 
 Health/status endpoints:
 - `GET /health`
@@ -53,6 +53,10 @@ Health/status endpoints:
 ## Database migration
 Run Supabase SQL migration:
 - `supabase/migrations/20260414_initial_brain20.sql`
+- `supabase/migrations/20260415_gym_platform_core.sql`
+
+## Postman
+- Import collection: `postman/brain2.0-gym-platform.postman_collection.json`
 
 ## Production notes
 - Gunicorn config: `backend/gunicorn.conf.py`
