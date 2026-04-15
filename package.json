@@ -1,0 +1,8 @@
+{
+  "name": "brain2.0",
+  "private": true,
+  "scripts": {
+    "dev:backend": "cd backend && flask --app app.main run --host 0.0.0.0 --port 2021",
+    "dev:frontend": "cd frontend && npm run dev"
+  }
+}
