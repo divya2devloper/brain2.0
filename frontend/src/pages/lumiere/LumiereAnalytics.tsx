@@ -91,16 +91,20 @@ const DollarIcon = () => (
   </svg>
 )
 
-const CustomDonutLabel = ({ cx, cy }: { cx: number; cy: number }) => (
-  <>
-    <text x={cx} y={cy - 8} textAnchor="middle" dominantBaseline="middle" style={{ fontSize: 22, fontWeight: 700, fill: '#1a1a2e' }}>
-      100%
-    </text>
-    <text x={cx} y={cy + 16} textAnchor="middle" dominantBaseline="middle" style={{ fontSize: 12, fill: '#888' }}>
-      Total
-    </text>
-  </>
-)
+const CustomDonutLabel = ({ viewBox }: { viewBox?: { cx: number; cy: number } }) => {
+  const cx = viewBox?.cx ?? 0
+  const cy = viewBox?.cy ?? 0
+  return (
+    <>
+      <text x={cx} y={cy - 8} textAnchor="middle" dominantBaseline="middle" style={{ fontSize: 22, fontWeight: 700, fill: '#1a1a2e' }}>
+        100%
+      </text>
+      <text x={cx} y={cy + 16} textAnchor="middle" dominantBaseline="middle" style={{ fontSize: 12, fill: '#888' }}>
+        Total
+      </text>
+    </>
+  )
+}
 
 export function LumiereAnalytics() {
   const [period, setPeriod] = useState<Period>('12M')
@@ -182,7 +186,7 @@ export function LumiereAnalytics() {
                   outerRadius={90}
                   dataKey="value"
                   labelLine={false}
-                  label={({ cx, cy }) => <CustomDonutLabel cx={cx} cy={cy} />}
+                  label={<CustomDonutLabel />}
                 >
                   {revenueByRole.map((entry, i) => (
                     <Cell key={i} fill={entry.color} />

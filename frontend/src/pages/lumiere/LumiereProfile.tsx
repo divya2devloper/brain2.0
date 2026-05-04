@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { Text, Title } from '@mantine/core'
 
 type ViewMode = 'studio' | 'freelancer'
@@ -53,8 +53,25 @@ const TimerIcon = () => (
   </svg>
 )
 
-const skills = ['Wedding Photography', 'Drone Videography', 'Portrait Sessions', 'Event Coverage']
+// Trial expiry stored in localStorage so it persists across page reloads
+const TRIAL_KEY = 'lumiere_trial_expiry'
+function getTrialExpiry(): number {
+  const stored = localStorage.getItem(TRIAL_KEY)
+  if (stored) return Number(stored)
+  const expiry = Date.now() + 72 * 60 * 60 * 1000
+  localStorage.setItem(TRIAL_KEY, String(expiry))
+  return expiry
+}
+
+function formatRemaining(ms: number): string {
+  if (ms <= 0) return '0h 0m'
+  const totalMinutes = Math.floor(ms / 60000)
+  const hours = Math.floor(totalMinutes / 60)
+  const minutes = totalMinutes % 60
+  return `${hours}h ${minutes}m`
+}
 const equipment = ['Canon EOS R5', 'DJI Mavic 3 Pro', 'Sony A7IV', 'Godox Lighting Kit']
+const skills = ['Wedding Photography', 'Drone Videography', 'Portrait Sessions', 'Event Coverage']
 
 const branches = [
   { city: 'Mumbai', address: 'Bandra West, Linking Road' },
@@ -65,6 +82,14 @@ const branches = [
 export function LumiereProfile() {
   const [viewMode, setViewMode] = useState<ViewMode>('freelancer')
   const [authLevel, setAuthLevel] = useState<AuthLevel>('manager')
+  const [remaining, setRemaining] = useState(() => getTrialExpiry() - Date.now())
+
+  useEffect(() => {
+    const id = setInterval(() => {
+      setRemaining(getTrialExpiry() - Date.now())
+    }, 60000)
+    return () => clearInterval(id)
+  }, [])
 
   const isFreelancer = viewMode === 'freelancer'
 
@@ -250,8 +275,8 @@ export function LumiereProfile() {
               <TimerIcon />
               <span style={{ fontWeight: 700, fontSize: 15, color: '#1a1a2e' }}>Trial Status</span>
             </div>
-            <div style={{ fontSize: 32, fontWeight: 800, color: '#e87f00', marginBottom: 4 }}>72h 0m</div>
-            <div style={{ fontSize: 13, color: '#888' }}>Full access remaining</div>
+            <div style={{ fontSize: 32, fontWeight: 800, color: '#e87f00', marginBottom: 4 }}>{formatRemaining(remaining)}</div>
+            <div style={{ fontSize: 13, color: remaining > 0 ? '#888' : '#e53e3e' }}>{remaining > 0 ? 'Full access remaining' : 'Trial expired'}</div>
           </div>
         </div>
       </div>
