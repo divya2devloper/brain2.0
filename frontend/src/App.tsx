@@ -4,6 +4,7 @@ import { Navigate, Route, Routes } from 'react-router-dom'
 import { LegalGatewayModal } from './components/LegalGatewayModal'
 import { useAuth } from './auth/AuthContext'
 import { AppShellLayout } from './layouts/AppShellLayout'
+import { LumiereLayout } from './layouts/LumiereLayout'
 import { BillingPage } from './pages/BillingPage'
 import { DashboardPage } from './pages/DashboardPage'
 import { DemoPage } from './pages/DemoPage'
@@ -17,6 +18,11 @@ import { OtpSignupPage } from './pages/OtpSignupPage'
 import { SettingsPage } from './pages/SettingsPage'
 import { TrainingPage } from './pages/TrainingPage'
 import { WhatsAppPage } from './pages/WhatsAppPage'
+import { LumiereDashboard } from './pages/lumiere/LumiereDashboard'
+import { LumiereCalendar } from './pages/lumiere/LumiereCalendar'
+import { LumiereJobHub } from './pages/lumiere/LumiereJobHub'
+import { LumiereAnalytics } from './pages/lumiere/LumiereAnalytics'
+import { LumiereProfile } from './pages/lumiere/LumiereProfile'
 
 function Protected({ children }: { children: JSX.Element }) {
   const { token } = useAuth()
@@ -61,6 +67,15 @@ export default function App() {
         </Route>
 
         <Route path="*" element={<NotFoundPage />} />
+
+        <Route path="/lumiere" element={<LumiereLayout />}>
+          <Route index element={<Navigate to="dashboard" replace />} />
+          <Route path="dashboard" element={<LumiereDashboard />} />
+          <Route path="calendar" element={<LumiereCalendar />} />
+          <Route path="job-hub" element={<LumiereJobHub />} />
+          <Route path="analytics" element={<LumiereAnalytics />} />
+          <Route path="profile" element={<LumiereProfile />} />
+        </Route>
       </Routes>
     </MantineProvider>
   )
